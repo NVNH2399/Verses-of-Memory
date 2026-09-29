@@ -1,0 +1,79 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+// Tài khoản dùng cho đăng nhập/đăng ký + phân quyền trang quản trị.
+// Dùng NextAuth Credentials provider (JWT session) nên không cần bảng
+// Account/Session/VerificationToken của các provider OAuth.
+model User {
+  id           String   @id @default(cuid())
+  name         String?
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(USER)
+  createdAt    DateTime @default(now())
+}
+
+model Author {
+  id             String  @id @default(cuid())
+  name           String
+  slug           String  @unique
+  bio            String?
+  birthYear      Int?
+  deathYear      Int?
+  isPublicDomain Boolean @default(false)
+  poems          Poem[]
+}
+
+model Poem {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  content     String?
+  excerpt     String?
+  excerptOnly Boolean  @default(false)
+  authorId    String
+  author      Author   @relation(fields: [authorId], references: [id])
+  period      String // "chống Pháp" | "chống Mỹ" | "khác"
+  tags        String[]
+  sourceUrl   String?
+  createdAt   DateTime @default(now())
+}
+
+// Module "Khoảnh Khắc": video ngắn kể chuyện lịch sử (YouTube nhúng được,
+// TikTok/Facebook chỉ lưu link gốc + thumbnail vì cần script nhúng riêng).
+model Moment {
+  id           String   @id @default(cuid())
+  title        String
+  slug         String   @unique
+  platform     String // "youtube" | "tiktok" | "facebook"
+  externalUrl  String // link gốc để xem trên nền tảng gốc
+  embedUrl     String? // link nhúng iframe (chủ yếu dùng cho YouTube)
+  thumbnailUrl String?
+  description  String?
+  period       String? // liên hệ thời kỳ, không bắt buộc
+  tags         String[]
+  createdAt    DateTime @default(now())
+}
+
+// Sản phẩm affiliate (vd: Shopee) hiển thị kèm nhãn công khai "liên kết tiếp thị".
+model AffiliateProduct {
+  id        String   @id @default(cuid())
+  label     String // tên sản phẩm hiển thị
+  price     String? // hiển thị dạng text, vd "129.000đ"
+  imageUrl  String?
+  shopeeUrl String // link affiliate Shopee (thay bằng link thật của bạn)
+  note      String? // ghi chú ngắn vì sao liên quan tới nội dung
+  createdAt DateTime @default(now())
+}

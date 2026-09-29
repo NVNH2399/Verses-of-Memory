@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-paper text-ink;
+  }
+
+  a {
+    @apply text-link;
+  }
+
+  ::selection {
+    background-color: #d9cdb0;
+  }
+}
+
+@layer components {
+  /* Khối nội dung thơ: font serif, line-height rộng, giữ xuống dòng như nguyên bản */
+  .poem-content {
+    @apply font-serif text-lg leading-loose whitespace-pre-line text-ink;
+  }
+
+  .poem-excerpt {
+    @apply font-serif text-lg leading-loose whitespace-pre-line text-ink italic;
+  }
+
+  /* "Thẻ mục lục" kiểu card catalog thư viện: viền nét đứt, nhãn kiểu máy đánh chữ */
+  .catalog-card {
+    @apply border border-dashed border-border bg-surface p-4 text-sm;
+    background-image: radial-gradient(circle at 8px 8px, rgba(155, 58, 46, 0.07) 2px, transparent 2px);
+    background-position: top left;
+    background-repeat: repeat-x;
+    background-size: 24px 8px;
+  }
+
+  .catalog-label {
+    @apply font-mono text-[11px] uppercase tracking-wider text-muted;
+  }
+
+  .catalog-value {
+    @apply font-sans text-sm text-ink;
+  }
+
+  .catalog-divider {
+    @apply my-3 border-t border-dashed border-border;
+  }
+
+  /* Nhãn "dấu mượn sách" cho trích đoạn / thời kỳ */
+  .stamp-badge {
+    @apply inline-block rounded-sm border border-stamp/40 bg-stamp/[0.08] px-2 py-0.5 font-mono text-[11px] uppercase tracking-wide text-stamp;
+  }
+
+  .content-frame {
+    @apply border border-border bg-surface;
+  }
+}
